@@ -13,8 +13,16 @@ use App\Models\BuyOffer;
 use App\Models\Batch;
 use Log;
 
+/**
+ * Functions for admins users only
+ */
+
 class AdminController extends Controller
 {
+	/**
+	 * Get sell offers list
+	 * @return array
+	 */
 	public function getSellOffersList(Request $request) {
 		$total = 0;
 
@@ -25,8 +33,8 @@ class AdminController extends Controller
 		$filter = 0;
 		$hideLocked = false;
 
-        $user = Auth::user();
-       
+		$user = Auth::user();
+	   
 		$data = $request->all();
 		extract($data);
 
@@ -39,7 +47,7 @@ class AdminController extends Controller
 		
 		if ($page_id < 1) $page_id = 1;
 			$start = ($page_id - 1) * $perPage;
-        
+		
 		$whereClause = [];
 		if ($filter == 1)
 			$whereClause = ['is_batch' => 1];
@@ -51,27 +59,31 @@ class AdminController extends Controller
 			$whereLocked = ['unlocked' => 1];
 
 
-        $total = Offer::where($whereClause)
+		$total = Offer::where($whereClause)
 						->where($whereLocked)
 						->count();
 
-        $offer_list = Offer::join('users', 'users.id', 'offers.user_id')
+		$offer_list = Offer::join('users', 'users.id', 'offers.user_id')
 						->with('user')
 						->where($whereClause)
 						->where($whereLocked)
 						->select(['offers.*'])
-                        ->orderBy($sort_key, $sort_direction)
-                        ->offset($start)
-                        ->limit($perPage)
-                        ->get();
-        
-        return [
+						->orderBy($sort_key, $sort_direction)
+						->offset($start)
+						->limit($perPage)
+						->get();
+		
+		return [
 			'success' => true,
 			'offer_list' => $offer_list,
 			'total' => $total,
-        ];
+		];
 	}
 
+	/**
+	 * Get buy offers list
+	 * @return array
+	 */
 	public function getBuyOffersList(Request $request) {
 		$total = 0;
 
@@ -81,8 +93,8 @@ class AdminController extends Controller
 		$page_id = 1;
 		$filter = 0;
 
-        $user = Auth::user();
-       
+		$user = Auth::user();
+	   
 		$data = $request->all();
 		extract($data);
 
@@ -94,7 +106,7 @@ class AdminController extends Controller
 		
 		if ($page_id < 1) $page_id = 1;
 			$start = ($page_id - 1) * $perPage;
-        
+		
 		$whereClause = [];
 		if ($filter == 1)
 			$whereClause = ['is_batch' => 1];
@@ -104,22 +116,26 @@ class AdminController extends Controller
 		$total = BuyOffer::where($whereClause)
 						->count();
 
-        $offer_list = BuyOffer::join('users', 'users.id', 'buy_offers.user_id')
+		$offer_list = BuyOffer::join('users', 'users.id', 'buy_offers.user_id')
 						->with('user')
 						->where($whereClause)
 						->select(['buy_offers.*'])
-                        ->orderBy($sort_key, $sort_direction)
-                        ->offset($start)
-                        ->limit($perPage)
-                        ->get();
-        
-        return [
+						->orderBy($sort_key, $sort_direction)
+						->offset($start)
+						->limit($perPage)
+						->get();
+		
+		return [
 			'success' => true,
 			'offer_list' => $offer_list,
 			'total' => $total,
-        ];
+		];
 	}
 
+	/**
+	 * Get batches list
+	 * @return array
+	 */
 	public function getBatchesList(Request $request) {
 		$total = 0;
 
@@ -128,8 +144,8 @@ class AdminController extends Controller
 		$sort_direction = 'desc';
 		$page_id = 1;
 
-        $user = Auth::user();
-       
+		$user = Auth::user();
+	   
 		$data = $request->all();
 		extract($data);
 
@@ -140,22 +156,30 @@ class AdminController extends Controller
 		
 		if ($page_id < 1) $page_id = 1;
 			$start = ($page_id - 1) * $perPage;
-        
-        $total = Batch::where([])->count();
+		
+		$total = Batch::where([])->count();
 
-        $batch_list = Batch::where([])
-                        ->orderBy($sort_key, $sort_direction)
-                        ->offset($start)
-                        ->limit($perPage)
-                        ->get();
-        
-        return [
+		$batch_list = Batch::where([])
+						->orderBy($sort_key, $sort_direction)
+						->offset($start)
+						->limit($perPage)
+						->get();
+		
+		return [
 			'success' => true,
 			'batch_list' => $batch_list,
 			'total' => $total,
-        ];
+		];
 	}
 
+	/**
+	 * Create a batch
+	 * @param int price
+	 * @param string notes
+	 * @param string checks
+	 * @param string buyChecks
+	 * @return array
+	 */
 	public function createBatch(Request $request) {
 		
 		$validator = Validator::make($request->all(), [
@@ -203,6 +227,12 @@ class AdminController extends Controller
 		return ['success' => true];
 	}
 
+	/**
+	 * Update a batch
+	 * @param int id
+	 * @param string notes
+	 * @return array
+	 */
 	public function updateBatch(Request $request) {
 		$validator = Validator::make($request->all(), [
 			'notes' => 'required'
@@ -224,6 +254,11 @@ class AdminController extends Controller
   
 	}
 
+	/**
+	 * Remove a batch
+	 * @param int id
+	 * @return array
+	 */
 	public function removeBatch(Request $request) {
 		$id = $request->id;
 		Batch::find($id)->delete();
@@ -233,6 +268,11 @@ class AdminController extends Controller
 		return ['success' => true];
 	}
 
+	/**
+	 * Get batch details
+	 * @param int id
+	 * @return array
+	 */
 	public function getBatchDetail(Request $request) {
 		$batch_id = (int) $request->id;
 		if ($batch_id == 0) 
@@ -247,6 +287,11 @@ class AdminController extends Controller
 		
 	}
 
+	/**
+	 * Get batch sell offers list
+	 * @param int id
+	 * @return array
+	 */
 	public function getBatchSellOffersList(Request $request) {
 		$batch_id = (int) $request->id;
 		if ($batch_id == 0) 
@@ -273,9 +318,9 @@ class AdminController extends Controller
 						->where('batch_id', $batch_id)
 						->select(['offers.*'])
 						->orderBy($sort_key, $sort_direction)
-                        ->offset($start)
-                        ->limit($perPage)
-                        ->get();
+						->offset($start)
+						->limit($perPage)
+						->get();
 
 		return [
 			'success' => true,
@@ -284,6 +329,11 @@ class AdminController extends Controller
 		];	
 	}
 
+	/**
+	 * Get batch buy offers list
+	 * @param int id
+	 * @return array
+	 */
 	public function getBatchBuyOffersList(Request $request) {
 		$batch_id = (int) $request->id;
 		if ($batch_id == 0) 
@@ -310,9 +360,9 @@ class AdminController extends Controller
 						->where('batch_id', $batch_id)
 						->select(['buy_offers.*'])
 						->orderBy($sort_key, $sort_direction)
-                        ->offset($start)
-                        ->limit($perPage)
-                        ->get();
+						->offset($start)
+						->limit($perPage)
+						->get();
 
 		return [
 			'success' => true,
@@ -321,6 +371,10 @@ class AdminController extends Controller
 		];	
 	}
 
+	/**
+	 * Export offers history in a CSV file
+	 * @return array
+	 */
 	public function exportCSV() {
 		$offers = Offer::with('user')->where([])->get();
 		$csv = "Req #,Request Date,Name,Email,Telegram,Amount For Sale,Desired Price,Unlocked,Batch\n";
@@ -346,6 +400,11 @@ class AdminController extends Controller
 
 	}
 
+	/**
+	 * Export offer details in a CSV file
+	 * @param int id
+	 * @return array
+	 */
 	public function detailExportCSV(Request $request) {
 		$offers = Offer::with('user')
 						->where('batch_id', $request->id)
