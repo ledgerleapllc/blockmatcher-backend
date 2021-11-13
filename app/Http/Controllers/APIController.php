@@ -26,8 +26,16 @@ use Laravel\Passport\Token;
 use Carbon\Carbon;
 use Log;
 
+/**
+ * Functions for initial publically accessible endpoints and 'getMe' for catching users with valid logged-in session tokens.
+ */
+
 class APIController extends Controller
 {
+	/**
+	 * Email testing function
+	 * @return array
+	 */
 	public function testEmail(Request $request) {
 		NotificationJob::dispatch('zohaib055@gmail.com', '', '', '');
 
@@ -45,11 +53,14 @@ class APIController extends Controller
 		]);
 	}
 
-	// Install
+	/**
+	 * Install path '/install'. You can turn this off by toggling INSTALL_PATH_ENABLED to 0 in .env
+	 * @return string
+	 */
 	public function install(Request $request) {
 		if(
-            (int)env('INSTALL_PATH_ENABLED') == 1
-        ) {
+			(int)env('INSTALL_PATH_ENABLED') == 1
+		) {
 			Log::info(":::: Install started ::::");
 			User::where([])->delete();
 			Offer::where([])->delete();
@@ -91,7 +102,10 @@ class APIController extends Controller
 		}
 	}
 
-	// Get Auth User
+	/**
+	 * Get user if logged in with a valid session token
+	 * @return array
+	 */
 	public function getMe(Request $request) {
 		$user = Auth::user();
 		

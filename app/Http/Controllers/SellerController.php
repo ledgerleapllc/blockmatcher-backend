@@ -8,19 +8,25 @@ use Validator;
 use App\Models\User;
 use App\Models\Offer;
 
+/**
+ * Functions for logged in buyers
+ */
+
 class SellerController extends Controller
 {
-    //Get CSPR Offers List
+    /**
+     * Get CSPR Offers List
+     * @return array
+     */
     public function getOffersList(Request $request) {
         $total = 0;
-
 		$perPage = 10;
 		$sort_key = 'id';
 		$sort_direction = 'desc';
 		$page_id = 1;
 
         $user = Auth::user();
-       
+
 		$data = $request->all();
 		extract($data);
 
@@ -31,7 +37,7 @@ class SellerController extends Controller
 		
 		if ($page_id < 1) $page_id = 1;
 			$start = ($page_id - 1) * $perPage;
-        
+
         $total = Offer::where('user_id', $user->id)->count();
 
         $offer_list = Offer::where('user_id', $user->id)
@@ -39,7 +45,7 @@ class SellerController extends Controller
                         ->offset($start)
                         ->limit($perPage)
                         ->get();
-        
+
         $total_cspr = Offer::where('user_id', $user->id)->sum('amount');
         $total_revenue = Offer::where('user_id', $user->id)->sum(\DB::raw('amount * desired_price')); 
 
@@ -52,7 +58,14 @@ class SellerController extends Controller
 		];
     }
 
-    // Register CSPR Batch for sale
+    /**
+     * Register a CSPR Batch for sale
+     * @param int amount
+     * @param int unlocked
+     * @param int where_held
+     * @param float desired_price
+     * @return array
+     */
     public function createOffer(Request $request) {
         $validator = Validator::make($request->all(), [
             'amount' => 'required',
@@ -80,11 +93,16 @@ class SellerController extends Controller
         return ['success' => true];
     }
 
+    /**
+     * Remove a CSPR sale order
+     * @param int id
+     * @return array
+     */
     public function removeOffer(Request $request) {
         $id = $request->id;
         $user = Auth::user();
         $offer = Offer::find($id);
-        
+
         if ($offer->user_id == $user->id)
             $offer->delete();
 

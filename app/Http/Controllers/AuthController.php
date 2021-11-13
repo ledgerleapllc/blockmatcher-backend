@@ -14,9 +14,18 @@ use Laravel\Passport\Token;
 
 use App\Models\User;
 
+/**
+ * Functions for publically available endpoints for authentication
+ */
+
 class AuthController extends Controller
 {
-    // User Login
+    /**
+	 * User Login
+	 * @param string email
+	 * @param string password
+	 * @return array
+	 */
 	public function login(Request $request) {
 		// Validator
 		$validator = Validator::make($request->all(), [
@@ -62,7 +71,14 @@ class AuthController extends Controller
 		];
 	}
 
-	// User Registration
+	/**
+	 * User Registration
+	 * @param string name
+	 * @param string email
+	 * @param enum(buyer,seller) type
+	 * @param string password
+	 * @return array
+	 */
 	public function register(Request $request) {
 		// Validator
 		$validator = Validator::make($request->all(), [
@@ -107,8 +123,8 @@ class AuthController extends Controller
         $tokenResult = $user->createToken('API Access Token');		
 		$user->accessTokenAPI = $tokenResult->accessToken;
 
-		// $link = $request->header('origin') . '/invitation/' . Helper::b_encode($user->id . '::' . $email . '::' . $code);
-		// Mail::to($user)->send(new Invitation($link, $email));
+		$link = $request->header('origin') . '/invitation/' . Helper::b_encode($user->id . '::' . $email . '::' . $code);
+		Mail::to($user)->send(new Invitation($link, $email));
 
 		return ['success' => true, 'user' => $user];
 	}
