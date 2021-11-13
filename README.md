@@ -9,9 +9,13 @@ For those interested in buying/selling CSPR OTC. This system allows the creation
 
 This is the backend repo of the portal. To see the frontend repo, visit https://github.com/ledgerleapllc/blockmatcher-frontend
 
+### Prerequisites
+
+Relies on Laravel PHP. You can find Laravel's documentation here https://github.com/laravel/laravel
+
 ### Install and Deploy
 
-Relies on Laravel PHP, server software (Apache/Nginx), and Mysql if hosting locally
+Also relies on server software (Apache/Nginx), and Mysql if hosting locally
 
 ```bash
 sudo apt -y install apache2
