@@ -105,7 +105,7 @@ final class CriticalFunctionsTest extends TestCase
 
     public function testSellerRemoveOffer(): void
     {
-        $response = $this->delete()('/api/user/sell-offers/1');
+        $response = $this->delete('/api/user/sell-offers/1');
         $response->assertStatus(302);
     }
 
@@ -123,13 +123,13 @@ final class CriticalFunctionsTest extends TestCase
 
     public function testBuyerUpdateOffer(): void
     {
-        $response = $this->put()('/api/user/buy-offers/1');
+        $response = $this->put('/api/user/buy-offers/1');
         $response->assertStatus(302);
     }
 
     public function testBuyerRemoveOffer(): void
     {
-        $response = $this->delete()('/api/user/buy-offers/1');
+        $response = $this->delete('/api/user/buy-offers/1');
         $response->assertStatus(302);
     }
 
