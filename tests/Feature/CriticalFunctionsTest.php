@@ -19,7 +19,19 @@ final class CriticalFunctionsTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testMe(): void
+    public function testFailToGetAuthenticationHeader(): void
+    {
+        $response = $this->get('/api/me');
+        $response->assertHeaderMissing('Authentication');
+    }
+
+    public function testAuthenticationRedirect(): void
+    {
+        $response = $this->get('/api/me');
+        $response->assertRedirect('login');
+    }
+
+    public function testGetMe(): void
     {
         $response = $this->get('/api/me');
         $response->assertStatus(302);
