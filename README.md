@@ -26,10 +26,17 @@ sudo apt -y install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
 sudo apt-get update
 sudo apt-get install -y php7.4
-sudo apt-get install -y php7.4-{bcmath,bz2,intl,gd,mbstring,mysql,zip,common,curl,xml}
+sudo apt-get install -y php7.4-{bcmath,bz2,intl,gd,mbstring,mysql,zip,common,curl,xml,cli}
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
 php -r "unlink('composer-setup.php');"
+```
+
+You will need to setup Mysql and Redis if running a local database.
+
+```bash
+sudo apt install -y mysql-server redis-server
+mysql -u root create database laravel; quit;
 ```
 
 Setup the repo according to our VHOST path. Note, the actual VHOST path in this case should be set to **/var/www/blockmatcher-backend/public**
