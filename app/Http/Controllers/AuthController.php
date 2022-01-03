@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 use Laravel\Passport\Token;
 
+use App\Mail\Invitation;
 use App\Http\Helper;
 use App\Models\User;
 
