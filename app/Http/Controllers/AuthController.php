@@ -126,7 +126,7 @@ class AuthController extends Controller
 		$user->accessTokenAPI = $tokenResult->accessToken;
 
 		$link = $request->header('origin') . '/invitation/' . Helper::b_encode($user->id . '::' . $request->email . '::' . $code);
-		Mail::to($user)->send(new Invitation($link, $request->email));
+		// Mail::to($user)->send(new Invitation($link, $request->email));
 
 		return ['success' => true, 'user' => $user];
 	}
