@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('/login', 'AuthController@login')->name('login');
 Route::post('/register', 'AuthController@register');
+Route::post('/send-reset-email', 'APIController@sendResetEmail');
 
 Route::group(['middleware' => ['auth:api']], function () {
 	// GET

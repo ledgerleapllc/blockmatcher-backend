@@ -115,4 +115,94 @@ class APIController extends Controller
 		];		
 		
 	}
+
+	/**
+	 * Reset password of a user by sending reset email
+	 * @param string email
+	 * @return array
+	 */
+	public function sendResetEmail(Request $request) {
+		$validator = Validator::make($request->all(), [
+			'email' => 'required|email',
+		]);
+
+		if ($validator->fails()) return ['success' => false];
+
+		$email = $request->get('email');
+		$user = User::where('email', $email)->first();
+
+		if (!$user) {
+			return [
+				'success' => false,
+				'message' => 'Email is not valid'
+			];
+		}
+
+		// Clear Tokens
+		DB::table('password_resets')
+			->where('email', $email)
+			->delete();
+
+		// Generate New One
+		$token = Str::random(60);
+		DB::table('password_resets')->insert([
+			'email' => $email,
+			'token' => Hash::make($token),
+			'created_at' => Carbon::now()
+		]);
+
+		$resetUrl = $request->header('origin') . '/password/reset/' . $token . '?email=' . urlencode($email);
+		Mail::to($user)->send(new ResetPasswordLink($resetUrl));
+
+		return ['success' => true];
+	}
+
+	/**
+	 * Reset Password
+	 * @param string email
+	 * @param string password
+	 * @param string token
+	 * @return array
+	 */
+	public function resetPassword(Request $request) {
+		// Validator
+		$validator = Validator::make($request->all(), [
+			'email' => 'required|email',
+			'password' => 'required',
+			'token' => 'required'
+		]);
+
+		if ($validator->fails()) return ['success' => false];
+		
+		$email = $request->get('email');
+		$password = $request->get('password');
+		$token = $request->get('token');
+
+		// Token Check
+		$temp = DB::table('password_resets')
+			->where('email', $email)
+			->first();
+		if (!$temp) return ['success' => false];
+		if (!Hash::check($token, $temp->token)) return ['success' => false];
+
+		// User Check
+		$user = User::where('email', $email)->first();
+
+		if (!$user) {
+			return [
+				'success' => false,
+				'message' => 'Invalid user'
+			];
+		}
+
+		$user->password = Hash::make($password);
+		$user->save();
+
+		// Clear Tokens
+		DB::table('password_resets')
+			->where('email', $email)
+			->delete();
+
+		return ['success' => true];
+	}
 }
