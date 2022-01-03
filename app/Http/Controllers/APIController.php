@@ -153,7 +153,8 @@ class APIController extends Controller
 		]);
 
 		$resetUrl = $request->header('origin') . '/password/reset/' . $token . '?email=' . urlencode($email);
-		Mail::to($user)->send(new ResetPasswordLink($resetUrl));
+		// Mail::to($user)->send(new ResetPasswordLink($resetUrl));
+		NotificationJob::dispatch($email, 'Reset Password', $resetUrl, '');
 
 		return ['success' => true];
 	}
