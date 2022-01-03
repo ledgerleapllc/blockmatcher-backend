@@ -19,6 +19,7 @@ use App\Models\Offer;
 use App\Models\BuyOffer;
 use App\Models\Batch;
 use App\Mail\Invitation;
+use App\Mail\ResetPasswordLink;
 
 use App\Jobs\NotificationJob;
 
