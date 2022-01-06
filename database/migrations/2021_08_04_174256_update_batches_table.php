@@ -14,7 +14,7 @@ class UpdateBatchesTable extends Migration
     public function up()
     {
         Schema::table('batches', function (Blueprint $table) {
-            $table->decimal('price');
+            $table->decimal('price')->nullable();
         });
     }
 
