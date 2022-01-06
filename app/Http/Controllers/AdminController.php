@@ -58,7 +58,6 @@ class AdminController extends Controller
 		if ($hideLocked) 
 			$whereLocked = ['unlocked' => 1];
 
-
 		$total = Offer::where($whereClause)
 						->where($whereLocked)
 						->count();

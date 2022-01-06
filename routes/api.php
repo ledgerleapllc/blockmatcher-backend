@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::post('/login', 'AuthController@login')->name('login');
 Route::post('/register', 'AuthController@register');
 Route::post('/send-reset-email', 'APIController@sendResetEmail');
@@ -29,7 +30,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:api']], function() {
 	Route::get('/export', 'AdminController@exportCSV');
 
 	Route::group(['prefix' => 'batches'], function() {
-
 		Route::get('/', 'AdminController@getBatchesList');		
 		Route::get('/{id}', 'AdminController@getBatchDetail');
 		Route::get('/{id}/sell-offers', 'AdminController@getBatchSellOffersList');
@@ -40,14 +40,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:api']], function() {
 		Route::put('/{id}', 'AdminController@updateBatch');
 
 		Route::delete('/{id}', 'AdminController@removeBatch');
-	
 	});
-	
 });
 
-
 Route::group(['prefix' => 'user', 'middleware' => ['auth:api']], function() {
-
 	Route::group(['prefix' => 'sell-offers', 'middleware' => ['auth:api']], function() {
 		Route::get('/', 'SellerController@getOffersList');
 		Route::post('/', 'SellerController@createOffer');
@@ -60,6 +56,4 @@ Route::group(['prefix' => 'user', 'middleware' => ['auth:api']], function() {
 		Route::put('/{id}', 'BuyerController@updateOffer');
 		Route::delete('/{id}', 'BuyerController@removeOffer');
 	});
-
 });
-

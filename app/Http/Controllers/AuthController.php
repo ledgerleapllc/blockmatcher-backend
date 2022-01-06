@@ -55,7 +55,7 @@ class AuthController extends Controller
 		if (!Hash::check($password, $user->password)) {
 			return [
 				'success' => false,
-				'message' => 'Password is not correct'
+				'message' => 'Password is not correct',
 			];
 		}
 
@@ -107,8 +107,11 @@ class AuthController extends Controller
 
 		$code = Str::random(6);
 		$type = $request->type;
-		if ($type == 'buyer')
+		
+		if ($type == 'buyer') {
 			$type = 'buyer';
+		}
+
 		// User
 		$user = new User;
 		$user->name = $request->name;
@@ -121,13 +124,17 @@ class AuthController extends Controller
 		$user->save();
 		$user->assignRole($user->role);
 
-        Auth::login($user);
+		Auth::login($user);
+        
         $tokenResult = $user->createToken('API Access Token');		
 		$user->accessTokenAPI = $tokenResult->accessToken;
 
-		$link = $request->header('origin') . '/invitation/' . Helper::b_encode($user->id . '::' . $request->email . '::' . $code);
+		// $link = $request->header('origin') . '/invitation/' . Helper::b_encode($user->id . '::' . $request->email . '::' . $code);
 		// Mail::to($user)->send(new Invitation($link, $request->email));
 
-		return ['success' => true, 'user' => $user];
+		return [
+			'success' => true,
+			'user' => $user,
+		];
 	}
 }
