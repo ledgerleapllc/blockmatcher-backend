@@ -32,9 +32,9 @@ class AdminController extends Controller
 		$page_id = 1;
 		$filter = 0;
 		$hideLocked = false;
-
+		
 		$user = Auth::user();
-	   
+	   	
 		$data = $request->all();
 		extract($data);
 

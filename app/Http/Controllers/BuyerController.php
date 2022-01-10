@@ -119,7 +119,7 @@ class BuyerController extends Controller
 		$offer = BuyOffer::find($id);
 
 		Log::info(json_encode($request->all()));
-		if ($offer->user_id == $user->id) {
+		if ($offer && $offer->user_id == $user->id) {
 			if ( isset($request->price) && !empty($request->price))
 				$offer->desired_price = $request->price;
 
@@ -145,7 +145,7 @@ class BuyerController extends Controller
 		$user = Auth::user();
 		$offer = BuyOffer::find($id);
 		
-		if ($offer->user_id == $user->id || $user->role == 'admin')
+		if ($offer && ($offer->user_id == $user->id || $user->role == 'admin'))
 			$offer->delete();
 
 		return ['success' => true];
